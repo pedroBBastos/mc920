@@ -18,7 +18,7 @@ print(result_matrix.shape)
 result_matrix_T = np.transpose(result_matrix, (1,0))
 print(result_matrix_T)
 
-# ---------------------------------------------------------
+# -------------------- SERIALIZACAO DE HEADER -> CRIACAO DE MATRIZ 
 print("------------------")
 
 my_dict = {'key1': 'value1', 'key2': 'value2'}
@@ -29,13 +29,17 @@ print(np_array)
 mask3LastBits = 7 # 0b111
 myArray = np.empty((3), dtype=np.uint8)
 
-for n in np_array:
+def extractBitsFromByte(mask3LastBits, n):
     copy = n
     intoRed = copy & mask3LastBits
     copy >>= 3
     intoGreen = copy & mask3LastBits
     copy >>= 3
     intoBlue = copy
+    return intoRed,intoGreen,intoBlue
+
+for n in np_array:
+    intoRed, intoGreen, intoBlue = extractBitsFromByte(mask3LastBits, n)
     current = np.array([intoRed, intoGreen, intoBlue])
     myArray = np.vstack((myArray, current))
 
@@ -44,7 +48,7 @@ resultHeader = np.transpose(myArray[1:], (1,0))
 print(resultHeader)
 print(resultHeader.shape)
 
-# -------------------------
+# ------------------------- SALVANDO MATRIZ DO HEADER NA IMAGEM
 print("-------------------------")
 
 def move3LastBits(x, y):

@@ -6,3 +6,6 @@ img = cv.imread('output.png')
 img = np.transpose(img, (2,1,0))
 print(img.shape)
 
+aux = img[:, :, :48]
+print(aux.shape)
+
