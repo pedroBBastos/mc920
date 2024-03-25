@@ -1,0 +1,1 @@
+python3 codificar.py --imgHostFile /home/pedrobastos/repositories/mc920/images/baboon.png --inputFile /home/pedrobastos/repositories/mc920/brincando.py --outputFileName output.png

@@ -1,42 +1,13 @@
 import numpy as np
 import cv2 as cv
 import argparse
-import pickle
 import sys
-
-# constant definitions
-maskToGet3LastBits = 7 # 0b111
-maskToGet2LastBits = 3 # 0b011
-
-maskToZero3LastBits = ~((1 << 3) - 1)
-maskToZero2LastBits = ~((1 << 2) - 1)
+import utils
+import json
 
 # header size in 1 byte
 # header
 # content
-
-def extractBitsFromByte(n):
-    aux = n
-    intoRed = aux & maskToGet3LastBits
-    aux >>= 3
-    intoGreen = aux & maskToGet3LastBits
-    aux >>= 3
-    intoBlue = aux
-    return np.array([intoRed,intoGreen,intoBlue])
-
-def move3LastBits(x, y):
-  auxX = x & maskToZero3LastBits
-  bitsToBePlaced = y & maskToGet3LastBits
-  return auxX ^ bitsToBePlaced
-
-def move2LastBits(x, y):
-  auxX = x & maskToZero2LastBits
-  bitsToBePlaced = y & maskToGet2LastBits
-  return auxX ^ bitsToBePlaced
-
-vectorizedExtractBitsFromByte = np.frompyfunc(extractBitsFromByte, 1, 1)
-vectorizedMove3LastBits = np.frompyfunc(move3LastBits, 2, 1)
-vectorizedMove2LastBits = np.frompyfunc(move2LastBits, 2, 1)
 
 
 def createHeader(size):
@@ -44,45 +15,39 @@ def createHeader(size):
     The header will have the output file extension and the file bytes size...
     The header will be a serialized python dictionary
     """
-    headerDict = {'extension': '.png', 'content-size': size}
-    serialized_bytes = pickle.dumps(headerDict)
+    headerDict = {"extension": ".png", "content-size": size}
+    json_string = json.dumps(headerDict)
+    serialized_bytes = bytes(json_string, 'utf-8')
     return np.frombuffer(serialized_bytes, dtype=np.uint8)
 
 def writeHeaderIntoHostFile(transposedImageMatrix, header):
-    print("header size -> ", header.size)
+    # print("header -> ", header)
     headerSize = header.size
 
     # Producing the 3 block bits from the header size byte
-    parsedBitsFromByte = extractBitsFromByte(headerSize)
-    # parsedBitsFromByte = np.reshape(parsedBitsFromByte, (3, 1))
-    print("bits header size ", parsedBitsFromByte)
+    parsedHeaderSizeBits = utils.extractBitsFromByte(headerSize)
+    firstPixel = transposedImageMatrix[:, 0, 0]
 
-    # print(transposedImageMatrix)
-    firstPixelColumn = transposedImageMatrix[:, 0, 0]
-    print("bytes first pixel ", firstPixelColumn)
+    # writing bits of header size byte on the first pixels
+    firstPixel[0] = utils.move3LastBits(firstPixel[0], parsedHeaderSizeBits[0])
+    firstPixel[1] = utils.move3LastBits(firstPixel[1], parsedHeaderSizeBits[1])
+    firstPixel[2] = utils.move2LastBits(firstPixel[2], parsedHeaderSizeBits[2])
+    transposedImageMatrix[:, 0, 0] = firstPixel
 
-    # writing bits of header size on the first pixels
-    firstPixelColumn[0] = move3LastBits(firstPixelColumn[0], parsedBitsFromByte[0])
-    firstPixelColumn[1] = move3LastBits(firstPixelColumn[1], parsedBitsFromByte[1])
-    firstPixelColumn[2] = move2LastBits(firstPixelColumn[2], parsedBitsFromByte[2])
-    print("bytes first pixel changed ", firstPixelColumn)
-    transposedImageMatrix[:, 0, 0] = firstPixelColumn
-    print("bytes first pixel changed finalll", transposedImageMatrix[:, 0, 0])
+
+
 
     # Producing matrix of extracted bits from all header bytes
-    bitsFromHeaderBytes = np.vstack(vectorizedExtractBitsFromByte(header))
+    bitsFromHeaderBytes = np.vstack(utils.vectorizedExtractBitsFromByte(header))
     bitsFromHeaderBytes = np.transpose(bitsFromHeaderBytes, (1,0))
-    print(bitsFromHeaderBytes)
     
     # Getting all pixels needed to write the header but the first (which contains the header size hidden)
-    contentMatrix = transposedImageMatrix[:, :, 1:headerSize+1]
-    print(contentMatrix.shape)
-    final = vectorizedMove3LastBits(contentMatrix[0], bitsFromHeaderBytes[0])
-    final = np.vstack((final, vectorizedMove3LastBits(contentMatrix[1], bitsFromHeaderBytes[1])))
-    final = np.vstack((final, vectorizedMove2LastBits(contentMatrix[2], bitsFromHeaderBytes[2])))
-    print(contentMatrix.shape)
-    transposedImageMatrix[:, :, 1:headerSize+1] = contentMatrix
+    contentMatrix = transposedImageMatrix[:, 0, 1:headerSize+1]
+    final = utils.vectorizedMove3LastBits(contentMatrix[0], bitsFromHeaderBytes[0])
+    final = np.vstack((final, utils.vectorizedMove3LastBits(contentMatrix[1], bitsFromHeaderBytes[1])))
+    final = np.vstack((final, utils.vectorizedMove2LastBits(contentMatrix[2], bitsFromHeaderBytes[2])))
 
+    transposedImageMatrix[:, 0, 1:headerSize+1] = final
     return
 
 
@@ -103,8 +68,6 @@ inputFileBytes = np.fromfile(args.inputFile, dtype=np.uint8)
 
 img = cv.imread(args.imgHostFile)
 img = np.transpose(img, (2,1,0))
-# print("size -> ", img.size)
-# print("shape -> ", img.shape)
 
 headerDict = createHeader(inputFileBytes.size)
 writeHeaderIntoHostFile(img, headerDict)
