@@ -1,1 +1,6 @@
-python3 codificar.py --imgHostFile /home/pedrobastos/repositories/mc920/images/baboon.png --inputFile /home/pedrobastos/repositories/mc920/brincando.py --outputFileName output.png
+python3 codificar.py --imgHostFile /home/pedrobastos/repositories/mc920/images/baboon.png --inputFile /home/pedrobastos/repositories/mc920/testes/brincando.py --outputFileName output.png
+
+python3 codificar.py --imgHostFile /home/pedrobastos/repositories/mc920/images/baboon.png --inputFile teste.txt --outputFileName output.png --fileNameWhenDecode blabla.txt
+
+TODO: usar n linhas para o header, caso o header seja muito grande, ao invés de usar apenas a primeira linha...
+TODO: fazer checagem pra ver se arquivo a ser escondido cabe na imagem

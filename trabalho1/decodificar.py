@@ -12,6 +12,10 @@ def find_difference(s1, s2):
             differences.append((i, char1, char2))
     return differences
 
+def create_file_from_bytes(byte_stream, file_path):
+    with open(file_path, 'wb') as f:
+        f.write(byte_stream)
+
 def readHeader(transposedImageMatrix):
     firstPixel = transposedImageMatrix[:, 0, 0]
     headerSize = utils.extractByteFromPixel(firstPixel)
@@ -28,6 +32,13 @@ def readHeader(transposedImageMatrix):
 
     return dictionary
 
+def readContent(headerDict, transposedImageMatrix):
+    contentSize = headerDict['content-size']
+    contentMatrix = transposedImageMatrix[:, 1, 0:contentSize]
+    contentByteArray = utils.extractByteFromPixel(contentMatrix) 
+    create_file_from_bytes(contentByteArray.tobytes(), headerDict['result-name'])
+    return
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--imgFile', type=str, help='Image with a hidden content')
@@ -43,3 +54,4 @@ imgFileToDecode = cv.imread(args.imgFile)
 imgFileToDecode = np.transpose(imgFileToDecode, (2,1,0))
 
 headerDict = readHeader(imgFileToDecode)
+readContent(headerDict, imgFileToDecode)
