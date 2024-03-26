@@ -15,13 +15,17 @@ def createHeader(size, fileNameWhenDecode):
     The header will have the output file extension and the file bytes size...
     The header will be a serialized python dictionary
     """
-    headerDict = {"extension": ".png", "content-size": size, "result-name": fileNameWhenDecode}
+    if fileNameWhenDecode == None:
+        print("--fileNameWhenDecode must not be empty")
+        exit()
+    headerDict = {"content-size": size, "result-name": fileNameWhenDecode}
     json_string = json.dumps(headerDict)
     serialized_bytes = bytes(json_string, 'utf-8')
     return np.frombuffer(serialized_bytes, dtype=np.uint8)
 
 def writeHeaderSizeIntoHostFile(transposedImageMatrix, header):
     headerSize = header.size
+    print("headerSize -> ", headerSize)
 
     # Producing the 3 block bits from the header size byte
     parsedHeaderSizeBits = utils.extractBitsFromByte(headerSize)
@@ -107,6 +111,10 @@ inputFileBytes = np.fromfile(args.inputFile, dtype=np.uint8)
 img = cv.imread(args.imgHostFile)
 img = np.transpose(img, (2,1,0))
 print(img.shape)
+
+if (img.shape[1]-1)*img.shape[2] < inputFileBytes.size:
+    print("Content to be hidden is larger than image!! Choose a greater image")
+    exit()
 
 headerDict = createHeader(inputFileBytes.size, args.fileNameWhenDecode)
 writeHeaderIntoHostFile(img, headerDict)
