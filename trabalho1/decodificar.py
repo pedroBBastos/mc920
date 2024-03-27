@@ -34,9 +34,24 @@ def readHeader(transposedImageMatrix):
 
 def readContent(headerDict, transposedImageMatrix):
     contentSize = headerDict['content-size']
-    contentMatrix = transposedImageMatrix[:, 1, 0:contentSize]
-    contentByteArray = utils.extractByteFromPixel(contentMatrix) 
-    create_file_from_bytes(contentByteArray.tobytes(), headerDict['result-name'])
+
+    readableMatrix = transposedImageMatrix[:, 1:, :]
+    print("readableMatrix.shape -> ", readableMatrix.shape)
+    rows = readableMatrix.shape[1]
+    cols = readableMatrix.shape[2]
+    readableMatrixLineShapedByColor = np.reshape(readableMatrix, (3, rows*cols))
+    print("readableMatrixLineShapedByColor.shape -> ", readableMatrixLineShapedByColor.shape)
+
+    message = readableMatrixLineShapedByColor[0, 0:contentSize]
+    message = np.vstack((message, readableMatrixLineShapedByColor[1, 0:contentSize]))
+    message = np.vstack((message, readableMatrixLineShapedByColor[2, 0:contentSize]))
+    print("message.shape -> ", message.shape)
+    message = message.T
+    print("message.shape -> ", message.shape)
+    message = utils.extractByteArrayFromPixelList(message)
+    print("message.shape -> ", message.shape)
+
+    create_file_from_bytes(message.tobytes(), headerDict['result-name'])
     return
 
 

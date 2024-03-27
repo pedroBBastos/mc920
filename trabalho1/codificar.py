@@ -39,7 +39,7 @@ def writeHeaderSizeIntoHostFile(transposedImageMatrix, header):
     return headerSize
 
 def writeHeaderIntoHostFile(transposedImageMatrix, header):
-    # print("header -> ", header)
+    print("header size -> ", header.size)
     headerSize = writeHeaderSizeIntoHostFile(transposedImageMatrix, header)
 
     # Producing matrix of extracted bits from all header bytes
@@ -57,15 +57,19 @@ def writeHeaderIntoHostFile(transposedImageMatrix, header):
 
 def writeFullContentIntoHostFile(transposedImageMatrix, contentByteArray):
 
+    print("contentByteArray.size -> ", contentByteArray.size)
+
      # Producing matrix of extracted bits from all content bytes
     bitsFromContentBytes = np.vstack(utils.vectorizedExtractBitsFromByte(contentByteArray))
     bitsFromContentBytes = np.transpose(bitsFromContentBytes, (1,0))
+    print("bitsFromContentBytes.shape -> ", bitsFromContentBytes.shape)
 
     # Getting all pixels from image except those dedicated to the header (first row of image)
     writableMatrix = transposedImageMatrix[:, 1:, :]
     print(writableMatrix.shape)
     rows = writableMatrix.shape[1]
     cols = writableMatrix.shape[2]
+    print("rows -> ", rows, ", cols -> ", cols)
 
     # Teste se double reshape esta resultando na mesma matrix... Deu certo,
     # então dá pra usar o mesmo raciocício da escrita do header e depois voltar para shape
@@ -79,10 +83,13 @@ def writeFullContentIntoHostFile(transposedImageMatrix, contentByteArray):
     # print("contentMatrix == contentMatrix3 -> ", contentMatrix == contentMatrix3)
 
     writableMatrixLineShapedByColor = np.reshape(writableMatrix, (3, rows*cols))
+    print("writableMatrixLineShapedByColor.shape -> ", writableMatrixLineShapedByColor.shape)
     contentSize = contentByteArray.size
     final = utils.vectorizedMove3LastBits(writableMatrixLineShapedByColor[0, 0:contentSize], bitsFromContentBytes[0])
     final = np.vstack((final, utils.vectorizedMove3LastBits(writableMatrixLineShapedByColor[1, 0:contentSize], bitsFromContentBytes[1])))
     final = np.vstack((final, utils.vectorizedMove2LastBits(writableMatrixLineShapedByColor[2, 0:contentSize], bitsFromContentBytes[2])))
+    print("final.shape -> ", final.shape)
+    print("writableMatrixLineShapedByColor[:, 0:contentSize].shape -> ", writableMatrixLineShapedByColor[:, 0:contentSize].shape)
     
     writableMatrixLineShapedByColor[:, 0:contentSize] = final
     writableMatrix = np.reshape(writableMatrixLineShapedByColor, (3, rows, cols))

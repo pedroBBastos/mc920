@@ -47,15 +47,15 @@ def extractByteFromPixel(threeBandsPixel):
     byteResult = move3LastBits(byteResult, threeBandsPixel[0])
     return byteResult
 
-def extractByteFromPixel2(threeBandsPixels: np.ndarray):
+def extractByteArrayFromPixelList(pixelList: np.ndarray):
     # Initialize an empty array to store the results
-    byteResults = np.empty(threeBandsPixels.shape[0], dtype=np.uint8)
+    byteResults = np.empty(pixelList.shape[0], dtype=np.uint8)
 
     # Iterate over each row of the matrix
-    for i, pixel in enumerate(threeBandsPixels):
+    for i, pixel in enumerate(pixelList):
         # Extract byte from the current row
         byteResult = move2LastBits(0, pixel[2])
-        byteResult <<= 2
+        byteResult <<= 3
         byteResult = move3LastBits(byteResult, pixel[1])
         byteResult <<= 3
         byteResult = move3LastBits(byteResult, pixel[0])

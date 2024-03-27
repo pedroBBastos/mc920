@@ -1,6 +1,7 @@
-python3 codificar.py --imgHostFile /home/pedrobastos/repositories/mc920/images/baboon.png --inputFile /home/pedrobastos/repositories/mc920/testes/brincando.py --outputFileName output.png
+python3 codificar.py --imgHostFile /home/pedrobastos/repositories/mc920/images/baboon.png --inputFile /home/pedrobastos/repositories/mc920/testes/brincando.py --outputFileName output.png --fileNameWhenDecode brincs.py
 
-python3 codificar.py --imgHostFile /home/pedrobastos/repositories/mc920/images/baboon.png --inputFile teste.txt --outputFileName output.png --fileNameWhenDecode blabla.txt
+python3 codificar.py --imgHostFile /home/pedrobastos/repositories/mc920/images/baboon.png --inputFile /home/pedrobastos/google-chrome-stable_current_amd64.deb --outputFileName output.png --fileNameWhenDecode chrome.deb
+python3 codificar.py --imgHostFile /home/pedrobastos/Downloads/pngegg.png --inputFile /home/pedrobastos/Downloads/08122118947381.webp --outputFileName output2.png --fileNameWhenDecode slamano.webp
 
 TODO: usar n linhas para o header, caso o header seja muito grande, ao invés de usar apenas a primeira linha...
 TODO: fazer checagem pra ver se arquivo a ser escondido cabe na imagem
