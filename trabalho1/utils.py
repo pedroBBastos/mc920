@@ -68,7 +68,7 @@ def extractByteArrayFromPixelList(pixelList: np.ndarray):
 maskToGetBit0 = 1   # 0b00000001
 maskToGetBit1 = 2   # 0b00000010
 maskToGetBit2 = 4   # 0b00000100
-maskToGetBit7 = 128 # 0b100000000
+maskToGetBit7 = 128 # 0b10000000
 
 def getBit0Number(number):
     bitExtracted = number & maskToGetBit0
