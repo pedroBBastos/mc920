@@ -64,3 +64,40 @@ def extractByteArrayFromPixelList(pixelList: np.ndarray):
         byteResults[i] = byteResult
 
     return byteResults
+
+maskToGetBit0 = 1   # 0b00000001
+maskToGetBit1 = 2   # 0b00000010
+maskToGetBit2 = 4   # 0b00000100
+maskToGetBit7 = 128 # 0b100000000
+
+def getBit0Number(number):
+    bitExtracted = number & maskToGetBit0
+    if bitExtracted == 0:
+        return 0
+    return 255
+
+vectorizedGetBit0Number = np.frompyfunc(getBit0Number, 1, 1)
+
+def getBit1Number(number):
+    bitExtracted = number & maskToGetBit1
+    if bitExtracted == 0:
+        return 0
+    return 255
+
+vectorizedGetBit1Number = np.frompyfunc(getBit1Number, 1, 1)
+
+def getBit2Number(number):
+    bitExtracted = number & maskToGetBit2
+    if bitExtracted == 0:
+        return 0
+    return 255
+
+vectorizedGetBit2Number = np.frompyfunc(getBit2Number, 1, 1)
+
+def getBit7Number(number):
+    bitExtracted = number & maskToGetBit7
+    if bitExtracted == 0:
+        return 0
+    return 255
+
+vectorizedGetBit7Number = np.frompyfunc(getBit7Number, 1, 1)

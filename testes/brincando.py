@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 
-img = cv.imread('images/baboon.png')
+img = cv.imread('../images/baboon.png')
 print("size -> ", img.size)
 print("shape -> ", img.shape)
 print("type -> ", type(img))
@@ -22,5 +22,5 @@ print(img2[-1].shape)
 print(img2[-1].ravel()[-3*200:]) # pegando os ultimos 3 bytes da ultima banda de cor
 
 
-# cv.imshow('asdads', img)
-# cv.waitKey(0)
+cv.imshow('asdads', img)
+cv.waitKey(0)

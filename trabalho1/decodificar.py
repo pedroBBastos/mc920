@@ -5,13 +5,6 @@ import json
 import sys
 import utils
 
-def find_difference(s1, s2):
-    differences = []
-    for i, (char1, char2) in enumerate(zip(s1, s2)):
-        if char1 != char2:
-            differences.append((i, char1, char2))
-    return differences
-
 def create_file_from_bytes(byte_stream, file_path):
     with open(file_path, 'wb') as f:
         f.write(byte_stream)
@@ -45,11 +38,8 @@ def readContent(headerDict, transposedImageMatrix):
     message = readableMatrixLineShapedByColor[0, 0:contentSize]
     message = np.vstack((message, readableMatrixLineShapedByColor[1, 0:contentSize]))
     message = np.vstack((message, readableMatrixLineShapedByColor[2, 0:contentSize]))
-    print("message.shape -> ", message.shape)
     message = message.T
-    print("message.shape -> ", message.shape)
     message = utils.extractByteArrayFromPixelList(message)
-    print("message.shape -> ", message.shape)
 
     create_file_from_bytes(message.tobytes(), headerDict['result-name'])
     return
