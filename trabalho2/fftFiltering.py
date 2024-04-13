@@ -63,7 +63,6 @@ def getFiltroRejeitaFaixa(shape):
 
     return mask
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--inputImg', type=str, help='Image to apply all types of filters')
 
@@ -96,7 +95,6 @@ for filteredImage in filteredImages:
     results.append(filtered_image_real)
 
 # Display the original and the filtered images
-
 for i in range(0, len(results)):
     plt.subplot(121), plt.imshow(image, cmap='gray')
     plt.title('Input Image'), plt.xticks([]), plt.yticks([])
@@ -105,3 +103,22 @@ for i in range(0, len(results)):
     plt.show()
 
 # Passa faixa = filtragem de bordas de uma certa espessura???
+
+magnitude = dft_shift[:, :, 0]
+print(magnitude)
+print("------------------------------------------------------------------")
+magnitude[np.abs(magnitude) < 2000] = 0
+dft_shift[:, :, 0] = magnitude
+print(dft_shift[:, :, 0])
+
+inverse_fft_shift = np.fft.ifftshift(dft_shift)
+inverse_fft_image = cv2.idft(inverse_fft_shift)
+compressed_image_real = cv2.normalize(inverse_fft_image[:, :, 0], None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+
+plt.subplot(121), plt.imshow(image, cmap='gray')
+plt.title('Input Image'), plt.xticks([]), plt.yticks([])
+plt.subplot(122), plt.imshow(compressed_image_real, cmap='gray')
+plt.title('Compressed Image'), plt.xticks([]), plt.yticks([])
+plt.show()
+
+cv2.imwrite('compressed.png', compressed_image_real)
