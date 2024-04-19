@@ -21,6 +21,7 @@ mask = np.ones((rows, cols, 2), np.uint8)
 mask[crow - 30:crow + 30, ccol - 30:ccol + 30] = 0
 
 # Apply the filter to the magnitude spectrum
+# filtered_spectrum = dft_shift * mask
 filtered_spectrum = dft_shift * mask
 
 # Inverse transform the filtered spectrum

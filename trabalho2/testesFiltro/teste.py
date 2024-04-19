@@ -24,11 +24,17 @@ plt.subplot(122), plt.imshow(magnitude_spectrum, cmap='gray')
 plt.title('Magnitude Spectrum'), plt.xticks([]), plt.yticks([])
 plt.show()
 
-print(image.shape)
-print(magnitude_spectrum)
+
+
+
+
+
+
+
+
 
 # mask = np.zeros((image.shape[0], image.shape[1], 1), dtype=np.uint8)
-mask = np.zeros((image.shape[0], image.shape[1], 1), dtype=np.uint8)
+mask = np.zeros((image.shape[0], image.shape[1]), dtype=np.uint8)
 # Circle parameters
 center = (int(image.shape[0]//2), int(image.shape[1]//2))  # Center of the circle (x, y)
 radius = 30  # Radius of the circle
@@ -36,54 +42,15 @@ color = 255 # 255  # Color of the circle (in BGR format)
 thickness = -1  # Thickness of the circle (-1 fills the circle)
 cv2.circle(mask, center, radius, color, thickness)
 
-
-
-
-result = np.multiply(dft_shift, mask)
+result = np.multiply(magnitude_spectrum, mask)
 # result = dft_shift * mask[:, :, np.newaxis]
 print("dft_shift.shape -> ", dft_shift.shape)
 # result = dft_shift * mask
 print(result)
 
-magnitude_spectrum_mask = 20 * np.log(cv2.magnitude(result[:, :, 0], result[:, :, 1]))
-# magnitude_spectrum_mask = cv2.magnitude(result[:, :, 0], result[:, :, 1])
-print(magnitude_spectrum_mask)
-
-# magnitude_spectrum_normalized = cv2.normalize(magnitude_spectrum_mask, None, 0, 255, cv2.NORM_MINMAX)
-# magnitude_spectrum_log = np.log1p(magnitude_spectrum_normalized)
-
 # Display the original and magnitude spectrum
 plt.subplot(121), plt.imshow(image, cmap='gray')
 plt.title('Input Image'), plt.xticks([]), plt.yticks([])
-plt.subplot(122), plt.imshow(magnitude_spectrum_mask, cmap='gray')
+plt.subplot(122), plt.imshow(result, cmap='gray')
 plt.title('Magnitude Spectrum'), plt.xticks([]), plt.yticks([])
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-# inverse_fft_shift = np.fft.ifftshift(result)
-# filtered_image = cv2.idft(inverse_fft_shift)
-# print("filtered_image.shape -> ", filtered_image.shape)
-
-# # Compute the magnitude spectrum of the filtered image
-# # filtered_magnitude_spectrum = cv2.magnitude(filtered_image[:, :, 0], filtered_image[:, :, 1])
-
-# # filtered_image_real = cv2.normalize(cv2.magnitude(filtered_image[:, :, 0], filtered_image[:, :, 1]), None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-# filtered_image_real = cv2.normalize(filtered_image[:, :, 0], None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-
-# # Display the original and the filtered image
-# plt.subplot(121), plt.imshow(image, cmap='gray')
-# plt.title('Input Image'), plt.xticks([]), plt.yticks([])
-# plt.subplot(122), plt.imshow(filtered_image_real, cmap='gray')
-# plt.title('Filtered image'), plt.xticks([]), plt.yticks([])
-# plt.show()
