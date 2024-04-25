@@ -133,7 +133,7 @@ plt.subplot(122), plt.imshow(compressed_image_real, cmap='gray')
 plt.title('Compressed Image - Threashold ' + str(compressThreashold)), plt.xticks([]), plt.yticks([])
 plt.show()
 
-cv2.imwrite('compressed.png', compressed_image_real)
+cv2.imwrite('compressed-threshold_'+ str(compressThreashold) +'.png', compressed_image_real)
 
 
 #################################################
