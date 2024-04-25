@@ -8,20 +8,20 @@ import os
 def getFiltroPassaBaixa(shape):
     mask = np.zeros((shape[0], shape[1], 1), dtype=np.uint8)
     # Circle parameters
-    center = (int(shape[0]//2), int(shape[1]//2))  # Center of the circle (x, y)
-    radius = 30  # Radius of the circle
-    color = 255  # Color of the circle (in BGR format)
-    thickness = -1  # Thickness of the circle (-1 fills the circle)
+    center = (int(shape[0]//2), int(shape[1]//2))
+    radius = 30
+    color = 255
+    thickness = -1
     cv2.circle(mask, center, radius, color, thickness)
     return mask
 
 def getFiltroPassaAlta(shape):
     mask = np.ones((shape[0], shape[1], 1), dtype=np.uint8)
     # Circle parameters
-    center = (int(shape[0]//2), int(shape[1]//2))  # Center of the circle (x, y)
-    radius = 30  # Radius of the circle
-    color = 0 # 255  # Color of the circle (in BGR format)
-    thickness = -1  # Thickness of the circle (-1 fills the circle)
+    center = (int(shape[0]//2), int(shape[1]//2))
+    radius = 30
+    color = 0
+    thickness = -1
     cv2.circle(mask, center, radius, color, thickness)
     return mask
 
@@ -29,17 +29,17 @@ def getFiltroPassaFaixa(shape):
     mask = np.zeros((shape[0], shape[1], 1), dtype=np.uint8)
 
     # Outter Circle parameters
-    out_center = (int(shape[0]//2), int(shape[1]//2))  # Center of the circle (x, y)
-    out_radius = 30  # Radius of the circle
-    out_color = 255  # Color of the circle (in BGR format)
-    out_thickness = -1  # Thickness of the circle (-1 fills the circle)
+    out_center = (int(shape[0]//2), int(shape[1]//2))
+    out_radius = 30
+    out_color = 255
+    out_thickness = -1
     cv2.circle(mask, out_center, out_radius, out_color, out_thickness)
 
     # Inner Circle parameters
-    inner_center = (int(shape[0]//2), int(shape[1]//2))  # Center of the circle (x, y)
-    inner_radius = 10  # Radius of the circle
-    inner_color = 0  # Color of the circle (in BGR format)
-    inner_thickness = -1  # Thickness of the circle (-1 fills the circle)
+    inner_center = (int(shape[0]//2), int(shape[1]//2))
+    inner_radius = 10
+    inner_color = 0
+    inner_thickness = -1
     cv2.circle(mask, inner_center, inner_radius, inner_color, inner_thickness)
 
     return mask
@@ -48,26 +48,27 @@ def getFiltroRejeitaFaixa(shape):
     mask = np.ones((shape[0], shape[1], 1), dtype=np.uint8)
 
     # Outter Circle parameters
-    out_center = (int(shape[0]//2), int(shape[1]//2))  # Center of the circle (x, y)
-    out_radius = 60  # Radius of the circle
-    out_color = 0  # Color of the circle (in BGR format)
-    out_thickness = -1  # Thickness of the circle (-1 fills the circle)
+    out_center = (int(shape[0]//2), int(shape[1]//2))
+    out_radius = 60
+    out_color = 0
+    out_thickness = -1
     cv2.circle(mask, out_center, out_radius, out_color, out_thickness)
 
     # # Inner Circle parameters
-    inner_center = (int(shape[0]//2), int(shape[1]//2))  # Center of the circle (x, y)
-    inner_radius = 20  # Radius of the circle
-    inner_color = 255  # Color of the circle (in BGR format)
-    inner_thickness = -1  # Thickness of the circle (-1 fills the circle)
+    inner_center = (int(shape[0]//2), int(shape[1]//2))
+    inner_radius = 20
+    inner_color = 255
+    inner_thickness = -1
     cv2.circle(mask, inner_center, inner_radius, inner_color, inner_thickness)
 
     return mask
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--inputImg', type=str, help='Image to apply all types of filters')
+parser.add_argument('--compressThreashold', type=str, help='Threashold to be considered when compresing image')
 
 args = parser.parse_args()
-if len(sys.argv[1:]) < 1:
+if len(sys.argv[1:]) < 4:
     print(args._get_args())
     parser.print_help()
     exit()
@@ -94,12 +95,7 @@ for f in filtersList:
 
 
 results = []
-# for filteredImage in filteredImages:
 for i in range(0, len(filteredImages)):
-    # plt.subplot(122), plt.imshow(cv2.normalize(filteredImage[:, :, 0], None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U), cmap='gray')
-    # plt.title('Filtered image'), plt.xticks([]), plt.yticks([])
-    # plt.show()
-
     inverse_fft_shift = np.fft.ifftshift(filteredImages[i])
     inverse_fft_image = cv2.idft(inverse_fft_shift)
     filtered_image_real = cv2.normalize(inverse_fft_image[:, :, 0], None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
@@ -113,18 +109,11 @@ for i in range(0, len(results)):
     plt.title('Resultado ' + labelsArray[i]), plt.xticks([]), plt.yticks([])
     plt.show()
 
-# Passa faixa = filtragem de bordas de uma certa espessura???
-
-# magnitude = dft_shift[:, :, 0]
-# print(magnitude)
-# print("------------------------------------------------------------------")
-# magnitude[np.abs(magnitude) < 200000] = 0
-# dft_shift[:, :, 0] = magnitude
-# print(dft_shift[:, :, 0])
 
 # mexendo em ambas magnitude e fase, o resultado fica mais parecido com a imagem
 # de exemplo no enunciado do relatório...
-dft_shift[np.abs(dft_shift) < 150000] = 0
+compressThreashold = int(args.compressThreashold)
+dft_shift[np.abs(dft_shift) < compressThreashold] = 0
 
 inverse_fft_shift = np.fft.ifftshift(dft_shift)
 inverse_fft_image = cv2.idft(inverse_fft_shift)
@@ -133,7 +122,30 @@ compressed_image_real = cv2.normalize(inverse_fft_image[:, :, 0], None, 0, 255, 
 plt.subplot(121), plt.imshow(image, cmap='gray')
 plt.title('Input Image'), plt.xticks([]), plt.yticks([])
 plt.subplot(122), plt.imshow(compressed_image_real, cmap='gray')
-plt.title('Compressed Image'), plt.xticks([]), plt.yticks([])
+plt.title('Compressed Image - Threashold ' + str(compressThreashold)), plt.xticks([]), plt.yticks([])
 plt.show()
 
 cv2.imwrite('compressed.png', compressed_image_real)
+
+
+#################################################
+## Calculando histograma 
+#################################################
+
+# Calculate histogram
+histogram = cv2.calcHist([image], [0], None, [256], [0, 256])
+# Plot histogram
+plt.plot(histogram, color='gray')
+plt.xlabel('Intensidade')
+plt.ylabel('Frequência')
+plt.title('Histograma imagem original')
+plt.xlim([0, 256])
+plt.show()
+
+histogram = cv2.calcHist([compressed_image_real], [0], None, [256], [0, 256])
+plt.plot(histogram, color='gray')
+plt.xlabel('Intensidade')
+plt.ylabel('Frequência')
+plt.title('Histograma Imagem comprimida com limiar ' + str(compressThreashold))
+plt.xlim([0, 256])
+plt.show()
