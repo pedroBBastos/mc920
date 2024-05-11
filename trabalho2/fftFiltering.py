@@ -5,6 +5,10 @@ import argparse
 import sys
 import os
 
+#################################################
+## Métodos para obtenção das máscaras para os filtros
+#################################################
+
 def getFiltroPassaBaixa(shape, radius):
     mask = np.zeros((shape[0], shape[1], 1), dtype=np.uint8)
     # Circle parameters
@@ -57,6 +61,10 @@ def getFiltroRejeitaFaixa(shape, out_radius, inner_radius):
 
     return mask
 
+#################################################
+## Parsing entrada
+#################################################
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--inputImg', type=str, help='Image to apply all types of filters')
 parser.add_argument('--r1', type=str, help='Filtering outer circle radius')
@@ -84,7 +92,11 @@ if r1 <= r2:
     print("Inner radius ", r2, " is greater than ", r1, "... Aborting")
     exit()
 
-# Getting FFT image from inputImg
+
+#################################################
+## Efetuando a FFT e a filtragem das imagens a partir das máscaras definidas
+#################################################
+
 image = cv2.imread(args.inputImg, cv2.IMREAD_GRAYSCALE)
 dft = cv2.dft(np.float32(image), flags=cv2.DFT_COMPLEX_OUTPUT)
 dft_shift = np.fft.fftshift(dft)
@@ -107,7 +119,7 @@ for i in range(0, len(filteredImages)):
     filtered_image_real = cv2.normalize(inverse_fft_image[:, :, 0], None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
     results.append((magnitude_spectrum_filters[i], filtered_image_real))
 
-# Display the original and the filtered images
+# Mostrando filtro realizado e imagem de resultado da aplicação do filtro
 for i in range(0, len(results)):
     plt.figure(figsize=(11, 6))
     plt.subplot(121), plt.imshow(results[i][0], cmap='gray')
@@ -116,6 +128,9 @@ for i in range(0, len(results)):
     plt.title('Resultado ' + labelsArray[i]), plt.xticks([]), plt.yticks([])
     plt.show()
 
+#################################################
+## Compressão a partir da remoção dos coeficientes
+#################################################
 
 # mexendo em ambas magnitude e fase, o resultado fica mais parecido com a imagem
 # de exemplo no enunciado do relatório...
