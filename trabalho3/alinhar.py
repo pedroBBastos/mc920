@@ -65,7 +65,7 @@ while currentRotation >= -90:
         melhorValorFuncObj = valorFuncaoObjetivo
         melhorRotacaoParaAlinhamento = currentRotation
 
-    print(i, "- currentRotation -> ", currentRotation, " - valorFuncaoObjetivo -> ", valorFuncaoObjetivo)
+    # print(i, "- currentRotation -> ", currentRotation, " - valorFuncaoObjetivo -> ", valorFuncaoObjetivo)
     currentRotation += rotationPace
     i += 1
 
