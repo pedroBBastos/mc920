@@ -20,6 +20,23 @@ def funcao_objetivo(binaryImage):
     sum_of_squares = np.sum(diff_squared)
     return sum_of_squares
 
+def verifica_projecao_horizontal(binary_image, start_angle, end_angle, rotationPace):
+    currentRotation = start_angle
+    melhorValorFuncObj = float('-inf')
+    melhorRotacaoParaAlinhamento = None
+    melhorImagemRotacionada = None
+
+    while abs(currentRotation) <= abs(end_angle):
+        currentRotatedImage = rotate_image(binary_image, currentRotation)
+        valorFuncaoObjetivo = funcao_objetivo(currentRotatedImage)
+        if valorFuncaoObjetivo > melhorValorFuncObj:
+            melhorValorFuncObj = valorFuncaoObjetivo
+            melhorRotacaoParaAlinhamento = currentRotation
+            melhorImagemRotacionada = currentRotatedImage
+        currentRotation += rotationPace
+
+    return melhorRotacaoParaAlinhamento, melhorValorFuncObj, melhorImagemRotacionada
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--inputImg', type=str, help='Image to be text aligned')
 
@@ -35,38 +52,25 @@ image_gray = cv2.imread(args.inputImg, cv2.IMREAD_GRAYSCALE)
 # Apply thresholding
 _, binary_image = cv2.threshold(image_gray, 127, 1, cv2.THRESH_BINARY)
 
-print(binary_image.shape)
-
-# Display the binary image using Matplotlib
 plt.imshow(binary_image, cmap='gray')
 plt.axis('off')
 plt.show()
 
-# rotated_binary_image = rotate_image(binary_image, -14.9)
+melhorRotacaoClockwise, valorFObjCW, imgRotated = verifica_projecao_horizontal(binary_image, 0, -90, -0.2)
+print("Melhor angulo para rotação clockwise (negative degress) -> ", melhorRotacaoClockwise)
 
-# # Display the binary image using Matplotlib
-# plt.imshow(rotated_binary_image, cmap='gray')
-# plt.axis('off')
-# plt.show()
+plt.imshow(imgRotated, cmap='gray')
+plt.axis('off')
+plt.show()
 
+melhorRotacaoNonClockwise, valorFObjNCW, imgRotated = verifica_projecao_horizontal(binary_image, 0, 90, 0.2)
+print("Melhor angulo para rotação non-clockwise (positive degress) -> ", melhorRotacaoNonClockwise)
 
-rotationPace = -0.2
-currentRotation = -0.2
-i = 0
+plt.imshow(imgRotated, cmap='gray')
+plt.axis('off')
+plt.show()
 
-melhorValorFuncObj = float('-inf')
-melhorRotacaoParaAlinhamento = None
-
-while currentRotation >= -90:
-    currentRotatedImage = rotate_image(binary_image, currentRotation)
-    valorFuncaoObjetivo = funcao_objetivo(currentRotatedImage)
-
-    if valorFuncaoObjetivo > melhorValorFuncObj:
-        melhorValorFuncObj = valorFuncaoObjetivo
-        melhorRotacaoParaAlinhamento = currentRotation
-
-    # print(i, "- currentRotation -> ", currentRotation, " - valorFuncaoObjetivo -> ", valorFuncaoObjetivo)
-    currentRotation += rotationPace
-    i += 1
-
-print("Melhor angulo para rotação -> ", melhorRotacaoParaAlinhamento)
+if valorFObjCW > valorFObjNCW:
+    print("Angulo final é ", melhorRotacaoClockwise)
+else:
+    print("Angulo final é ", melhorRotacaoNonClockwise)
