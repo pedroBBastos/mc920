@@ -39,6 +39,7 @@ def verifica_projecao_horizontal(binary_image, start_angle, end_angle, rotationP
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--inputImg', type=str, help='Image to be text aligned')
+parser.add_argument('--mode', type=str, help='Alignment mode to be used: PROJECTION or HOUGH')
 
 args = parser.parse_args()
 if len(sys.argv[1:]) < 2:
@@ -50,7 +51,7 @@ if len(sys.argv[1:]) < 2:
 image_gray = cv2.imread(args.inputImg, cv2.IMREAD_GRAYSCALE)
 
 # Apply thresholding
-_, binary_image = cv2.threshold(image_gray, 127, 1, cv2.THRESH_BINARY)
+_, binary_image = cv2.threshold(image_gray, 200, 1, cv2.THRESH_BINARY)
 
 plt.imshow(binary_image, cmap='gray')
 plt.axis('off')

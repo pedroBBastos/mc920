@@ -1,1 +1,8 @@
 lendo a imagem como imagem binária para poder fazer as contabilizações de cada pixel 0 ou 1
+
+- nos testes com a transformada de Hough, os resultados variaram de acordo com o threshold passado...
+- além disso, binarizando as imagens antes também proveu melhores resultados.
+    -> na realizada, para as imagens sampleX fizeram aparecer alguma coisa....
+
+- para fazer dar certo a análise da partitura, sobi bem o threshold da binarização para não apagar as
+linhas
