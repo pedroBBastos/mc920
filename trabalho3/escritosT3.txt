@@ -6,3 +6,10 @@ lendo a imagem como imagem binária para poder fazer as contabilizações de cad
 
 - para fazer dar certo a análise da partitura, sobi bem o threshold da binarização para não apagar as
 linhas
+
+- com relação a Hough, talvez eu tenha que parametrizar o threshold também....
+
+--------------------------------
+
+python3 alinhar.py --inputImg images/partitura.png --mode HOUGH --houghThreshold 230
+python3 alinhar.py --inputImg images/pos_41.png --mode HOUGH
