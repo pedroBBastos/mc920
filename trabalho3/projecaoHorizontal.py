@@ -1,15 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
-def rotate_image(image, angle):
-    # Get image dimensions
-    rows, cols = image.shape[:2]
-    # Calculate the rotation matrix
-    rotation_matrix = cv2.getRotationMatrix2D((cols / 2, rows / 2), angle, 1)
-    # Perform the rotation
-    rotated_image = cv2.warpAffine(image, rotation_matrix, (cols, rows))
-    return rotated_image
+import utils
 
 def funcao_objetivo(binaryImage):
     histograma = np.sum(binaryImage, axis=1)
@@ -24,7 +16,7 @@ def verifica_projecao_horizontal(binary_image, start_angle, end_angle, rotationP
     melhorImagemRotacionada = None
 
     while abs(currentRotation) <= abs(end_angle):
-        currentRotatedImage = rotate_image(binary_image, currentRotation)
+        currentRotatedImage = utils.rotate_image(binary_image, currentRotation)
         valorFuncaoObjetivo = funcao_objetivo(currentRotatedImage)
         if valorFuncaoObjetivo > melhorValorFuncObj:
             melhorValorFuncObj = valorFuncaoObjetivo
@@ -33,32 +25,25 @@ def verifica_projecao_horizontal(binary_image, start_angle, end_angle, rotationP
         currentRotation += rotationPace
     return melhorRotacaoParaAlinhamento, melhorValorFuncObj, melhorImagemRotacionada
 
-def alinhar(inputImgPath):
-    # Load the image in grayscale
-    image_gray = cv2.imread(inputImgPath, cv2.IMREAD_GRAYSCALE)
-
+def alinhar(inputImg):
     # Apply thresholding
-    _, binary_image = cv2.threshold(image_gray, 200, 1, cv2.THRESH_BINARY)
+    _, binary_image = cv2.threshold(inputImg, 200, 1, cv2.THRESH_BINARY)
 
-    plt.imshow(binary_image, cmap='gray')
-    plt.axis('off')
-    plt.show()
-
-    melhorRotacaoClockwise, valorFObjCW, imgRotated = verifica_projecao_horizontal(binary_image, 0, -90, -0.2)
+    melhorRotacaoClockwise, valorFObjCW, imgRotatedCW = verifica_projecao_horizontal(binary_image, 0, -90, -0.2)
     print("Melhor angulo para rotação clockwise (negative degress) -> ", melhorRotacaoClockwise)
 
-    plt.imshow(imgRotated, cmap='gray')
-    plt.axis('off')
-    plt.show()
-
-    melhorRotacaoNonClockwise, valorFObjNCW, imgRotated = verifica_projecao_horizontal(binary_image, 0, 90, 0.2)
+    melhorRotacaoNonClockwise, valorFObjNCW, imgRotatedNCW = verifica_projecao_horizontal(binary_image, 0, 90, 0.2)
     print("Melhor angulo para rotação non-clockwise (positive degress) -> ", melhorRotacaoNonClockwise)
-
-    plt.imshow(imgRotated, cmap='gray')
-    plt.axis('off')
-    plt.show()
 
     if valorFObjCW > valorFObjNCW:
         print("Angulo final é ", melhorRotacaoClockwise)
+        plt.imshow(imgRotatedCW, cmap='gray')
+        plt.axis('off')
+        plt.show()
+        return melhorRotacaoClockwise
     else:
         print("Angulo final é ", melhorRotacaoNonClockwise)
+        plt.imshow(imgRotatedNCW, cmap='gray')
+        plt.axis('off')
+        plt.show()
+        return melhorRotacaoNonClockwise

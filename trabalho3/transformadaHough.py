@@ -3,11 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-def alinhar(inputImgPath, houghThreshold=400):
-    # Load the image
-    image = cv2.imread(inputImgPath, cv2.IMREAD_GRAYSCALE)
-
-    _, binary_image = cv2.threshold(image, 200, 255, cv2.THRESH_BINARY)
+def alinhar(inputImg, houghThreshold=400):
+    _, binary_image = cv2.threshold(inputImg, 200, 255, cv2.THRESH_BINARY)
 
     # Convert the image to grayscale
     # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -29,10 +26,10 @@ def alinhar(inputImgPath, houghThreshold=400):
 
     # Draw detected lines on the original image
     result_image = cv2.cvtColor(binary_image, cv2.COLOR_GRAY2BGR)
+    finalAngle = None
     if lines is not None:
         thetaArray = []
         for rho, theta in lines[:, 0]:
-            print("theta -> ", math.degrees(theta))
             thetaArray.append(math.degrees(theta))
             a = np.cos(theta)
             b = np.sin(theta)
@@ -44,15 +41,29 @@ def alinhar(inputImgPath, houghThreshold=400):
             y2 = int(y0 - 1000 * (a))
             cv2.line(result_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
         thetaAverage = np.average(thetaArray)
-        print("np.average(theta) -> ", thetaAverage)
-        if thetaAverage < 90:
-            print("Angulo final é ", 90 - thetaAverage)
-        else:
-            print("Angulo final é ", thetaAverage - 90)
-    else:
-        print("lines is None.............. )=")
 
-    # Display the result
-    plt.imshow(result_image, cmap='gray')
-    plt.axis('off')
-    plt.show()
+        # Display the result
+        plt.imshow(result_image, cmap='gray')
+        plt.axis('off')
+        plt.show()
+        
+        if thetaAverage < 90:
+            finalAngle = -(90 - thetaAverage)
+            print("Angulo final é ", finalAngle)
+            # rotatedImg = utils.rotate_image(image, finalAngle)
+            # plt.imshow(rotatedImg, cmap='gray')
+            # plt.axis('off')
+            # plt.show()
+            # cv2.imwrite(outputImg, rotatedImg)
+        else:
+            finalAngle = thetaAverage - 90
+            print("Angulo final é ", finalAngle)
+            # rotatedImg = utils.rotate_image(image, finalAngle)
+            # plt.imshow(rotatedImg, cmap='gray')
+            # plt.axis('off')
+            # plt.show()
+            # cv2.imwrite(outputImg, rotatedImg)
+    else:
+        print("No Hough lines found for hough threshold ", houghThreshold, ".......... )=")
+
+    return finalAngle

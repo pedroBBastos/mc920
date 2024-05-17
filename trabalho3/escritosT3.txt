@@ -11,5 +11,6 @@ linhas
 
 --------------------------------
 
-python3 alinhar.py --inputImg images/partitura.png --mode HOUGH --houghThreshold 230
-python3 alinhar.py --inputImg images/pos_41.png --mode HOUGH
+python3 alinhar.py --inputImg images/partitura.png --mode HOUGH --outputImg result.png --houghThreshold 200
+python3 alinhar.py --inputImg images/partitura.png --mode PROJECTION --outputImg result.png --houghThreshold 200
+python3 alinhar.py --inputImg images/pos_24.png --mode HOUGH --outputImg result.png
