@@ -31,16 +31,5 @@ plt.imshow(image_gray, cmap='gray')
 plt.axis('off')
 plt.show()
 
-currentRotatedImage = rotate_image(image_gray, -90)
-
-# # Display the binary image using Matplotlib
-plt.imshow(currentRotatedImage, cmap='gray')
-plt.axis('off')
-plt.show()
-
-currentRotatedImage = rotate_image(image_gray, 90)
-
-# # Display the binary image using Matplotlib
-plt.imshow(currentRotatedImage, cmap='gray')
-plt.axis('off')
-plt.show()
+currentRotatedImage = rotate_image(image_gray, 270)
+cv2.imwrite('testeRotacao.png', currentRotatedImage)

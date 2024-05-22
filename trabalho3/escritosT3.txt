@@ -11,6 +11,11 @@ linhas
 
 --------------------------------
 
+explicar no relatório que de -90 a 90 fez dar certo tratando imgs rotacionadas
+em todos os quadrantes (sendo que no 3o e 4o as imagens ficam de ponta cabeça...)
+
+--------------------------------
+
 python3 alinhar.py --inputImg images/partitura.png --mode HOUGH --outputImg result.png --houghThreshold 200
 python3 alinhar.py --inputImg images/partitura.png --mode PROJECTION --outputImg result.png --houghThreshold 200
 python3 alinhar.py --inputImg images/pos_24.png --mode HOUGH --outputImg result.png
