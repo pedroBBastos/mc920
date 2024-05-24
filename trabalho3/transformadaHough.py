@@ -6,9 +6,6 @@ import math
 def alinhar(inputImg, houghThreshold=400):
     _, binary_image = cv2.threshold(inputImg, 200, 255, cv2.THRESH_BINARY)
 
-    # Convert the image to grayscale
-    # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
     # Apply Sobel edge detection
     sobel_x = cv2.Sobel(binary_image, cv2.CV_64F, 1, 0, ksize=3)
     sobel_y = cv2.Sobel(binary_image, cv2.CV_64F, 0, 1, ksize=3)
@@ -54,7 +51,6 @@ def alinhar(inputImg, houghThreshold=400):
             # plt.imshow(rotatedImg, cmap='gray')
             # plt.axis('off')
             # plt.show()
-            # cv2.imwrite(outputImg, rotatedImg)
         else:
             finalAngle = thetaAverage - 90
             print("Angulo final é ", finalAngle)
@@ -62,8 +58,10 @@ def alinhar(inputImg, houghThreshold=400):
             # plt.imshow(rotatedImg, cmap='gray')
             # plt.axis('off')
             # plt.show()
-            # cv2.imwrite(outputImg, rotatedImg)
     else:
+        plt.imshow(binary_image, cmap='gray')
+        plt.axis('off')
+        plt.show()
         print("No Hough lines found for hough threshold ", houghThreshold, ".......... )=")
 
     return finalAngle

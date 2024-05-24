@@ -31,5 +31,14 @@ plt.imshow(image_gray, cmap='gray')
 plt.axis('off')
 plt.show()
 
-currentRotatedImage = rotate_image(image_gray, 270)
-cv2.imwrite('testeRotacao.png', currentRotatedImage)
+currentRotatedImage = rotate_image(image_gray, 47)
+cv2.imwrite('testeRotacao_47_.png', currentRotatedImage)
+
+currentRotatedImage = rotate_image(image_gray, 144)
+cv2.imwrite('testeRotacao_144_.png', currentRotatedImage)
+
+currentRotatedImage = rotate_image(image_gray, 210)
+cv2.imwrite('testeRotacao_210_.png', currentRotatedImage)
+
+currentRotatedImage = rotate_image(image_gray, 311)
+cv2.imwrite('testeRotacao_311_.png', currentRotatedImage)

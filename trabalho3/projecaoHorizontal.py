@@ -29,6 +29,10 @@ def alinhar(inputImg):
     # Apply thresholding
     _, binary_image = cv2.threshold(inputImg, 200, 1, cv2.THRESH_BINARY)
 
+    plt.imshow(binary_image, cmap='gray')
+    plt.axis('off')
+    plt.show()
+
     melhorRotacaoClockwise, valorFObjCW, imgRotatedCW = verifica_projecao_horizontal(binary_image, 0, -90, -0.2)
     print("Melhor angulo para rotação clockwise (negative degress) -> ", melhorRotacaoClockwise)
 
