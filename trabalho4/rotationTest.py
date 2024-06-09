@@ -12,7 +12,18 @@ def rotate_image(inputImg, outputImg, inverseScaleMatrix):
                                           [1]
                                         ])
             inputImgPixel = inverseScaleMatrix @ currentOutputPixel
-            outputImg[row, column] = inputImg[int(inputImgPixel[1,0])%512, int(inputImgPixel[0,0])%512]
+
+            inputImgRow = int(inputImgPixel[1,0])
+            inputImgColumn = int(inputImgPixel[0,0])
+
+            inputImgRow = inputImgRow if inputImgRow < 512 and inputImgRow >= 0 else -1
+            inputImgColumn = inputImgColumn if inputImgColumn < 512 and inputImgColumn >= 0 else -1
+
+            if inputImgRow == -1 or inputImgColumn == -1:
+                outputImg[row, column] = 0
+            else:
+                outputImg[row, column] = inputImg[inputImgRow, inputImgColumn]
+
 
 image = cv2.imread('./images/baboon.png', cv2.IMREAD_GRAYSCALE)
 print(image.shape)
