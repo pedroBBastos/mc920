@@ -113,6 +113,20 @@ def lagrange_interpolation(image, resized_image):
                                          -dy*(dy+1)*(dy-2)*L(3, x, y, dx, image)/2 + \
                                          dy*(dy+1)*(dy-1)*L(4, x, y, dx, image)/6
 
+def scale_image(outputImg, scaleFactor):
+    outputRows, outptColumns = outputImg.shape[:2]
+    scaleMatrix = np.array([
+                        [scaleFactor, 0, 0],
+                        [0, scaleFactor, 0],
+                        [0, 0, 1]
+                    ], dtype=np.uint8)
+    for row in range(outputRows):
+        for column in range(outptColumns):
+            mappedInputRow = round(row / scaleFactor)
+            mappedInputColumn = round(column / scaleFactor)
+            outputImg[row, column] = outputImg[mappedInputRow, mappedInputColumn]
+    return
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', action='store', dest='angle', help='Rotation angle')
