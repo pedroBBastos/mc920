@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import argparse
-import interpolations
+import interpolation_by_point
 import scaling
 import rotation
 
@@ -19,25 +19,46 @@ args = parser.parse_args()
 image = cv2.imread(args.input_image, cv2.IMREAD_GRAYSCALE)
 print(image.shape)
 
+interpolation = None
+outputName = None
+
+if args.interpolation == 'NEAREST':
+    interpolation = interpolation_by_point.NearestNeighborInterpolation()
+    outputName = 'nearest.png'
+elif args.interpolation == 'BILINEAR':
+    interpolation = interpolation_by_point.BilinearInterpolation()
+    outputName = 'bilinear.png'
+elif args.interpolation == 'BICUBIC':
+    interpolation = interpolation_by_point.BicubicInterpolation()
+    outputName = 'bicubic.png'
+elif args.interpolation == 'LAGRANGE':
+    interpolation = interpolation_by_point.LagrangeInterpolation()
+    outputName = 'lagrange.png'
+else:
+    print("No interpolation method provided... Aborting..")
+    exit()
+
 transformedImg = None
 
 if args.scale_factor:
-    transformedImg = scaling.scale_image(args.scale_factor, image)
-elif args.rotation_factor:
-    transformedImg = rotation.rotate_image(args.rotation_factor, image)
+    transformedImg = scaling.scale_image(args.scale_factor, image, interpolation)
+    cv2.imwrite(outputName, transformedImg)
+# elif args.rotation_factor:
+#     transformedImg = rotation.rotate_image(args.rotation_factor, image)
 
-output_image = np.zeros((args.height, args.width), dtype=np.uint8)
-if args.interpolation == 'NEAREST':
-    interpolations.nearest_neighbor_interpolation(transformedImg, output_image)
-    cv2.imwrite('resized_image-nearest.png', output_image)
-elif args.interpolation == 'BILINEAR':
-    interpolations.bilinear_interpolation(transformedImg, output_image)
-    cv2.imwrite('resized_image-bilinear.png', output_image)
-elif args.interpolation == 'BICUBIC':
-    interpolations.bicubic_interpolation(transformedImg, output_image)
-    cv2.imwrite('resized_image-bicubic.png', output_image)
-elif args.interpolation == 'LAGRANGE':
-    interpolations.lagrange_interpolation(transformedImg, output_image)
-    cv2.imwrite('resized_image-lagrange.png', output_image)
-else:
-    print("No interpolation method provided... Aborting..")
+
+# output_image = np.zeros((args.height, args.width), dtype=np.uint8)
+# if args.interpolation == 'NEAREST':
+#     interpolations.nearest_neighbor_interpolation(transformedImg, output_image)
+#     cv2.imwrite('resized_image-nearest.png', output_image)
+# elif args.interpolation == 'BILINEAR':
+#     interpolations.bilinear_interpolation(transformedImg, output_image)
+#     cv2.imwrite('resized_image-bilinear.png', output_image)
+# elif args.interpolation == 'BICUBIC':
+#     interpolations.bicubic_interpolation(transformedImg, output_image)
+#     cv2.imwrite('resized_image-bicubic.png', output_image)
+# elif args.interpolation == 'LAGRANGE':
+#     interpolations.lagrange_interpolation(transformedImg, output_image)
+#     cv2.imwrite('resized_image-lagrange.png', output_image)
+# else:
+#     print("No interpolation method provided... Aborting..")
