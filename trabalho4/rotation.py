@@ -1,7 +1,8 @@
 import numpy as np
 import math
+import interpolation_by_point as interpolation
 
-def rotate_image(rotationFactor, inputImg):
+def rotate_image(rotationFactor, inputImg, interpolation: interpolation.Interpolation):
     rotationFactorRadians = np.radians(-rotationFactor)
     image_height, image_width = inputImg.shape[:2]
 
@@ -46,6 +47,7 @@ def rotate_image(rotationFactor, inputImg):
             if inputImgRow == -1 or inputImgColumn == -1:
                 output_image[row, column] = 0
             else:
-                output_image[row, column] = inputImg[inputImgRow, inputImgColumn]
+                # output_image[row, column] = inputImg[inputImgRow, inputImgColumn]
+                output_image[row, column] = interpolation.interpolate(inputImgRow, inputImgColumn, inputImg)
 
     return output_image

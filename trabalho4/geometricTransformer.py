@@ -43,8 +43,9 @@ transformedImg = None
 if args.scale_factor:
     transformedImg = scaling.scale_image(args.scale_factor, image, interpolation)
     cv2.imwrite(outputName, transformedImg)
-# elif args.rotation_factor:
-#     transformedImg = rotation.rotate_image(args.rotation_factor, image)
+elif args.rotation_factor:
+    transformedImg = rotation.rotate_image(args.rotation_factor, image, interpolation)
+    cv2.imwrite(outputName, transformedImg)
 
 
 # output_image = np.zeros((args.height, args.width), dtype=np.uint8)
