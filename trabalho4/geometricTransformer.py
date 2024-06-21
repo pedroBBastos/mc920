@@ -5,6 +5,7 @@ import interpolation_by_point
 import scaling
 import rotation
 import resize
+import utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-r', action='store', type=float, dest='rotation_factor', help='Rotation angle')
@@ -45,7 +46,9 @@ if args.scale_factor:
     transformedImg = scaling.scale_image(args.scale_factor, image, interpolation)
     # cv2.imwrite(outputName, transformedImg)
 elif args.rotation_factor:
-    transformedImg = rotation.rotate_image(args.rotation_factor, image, interpolation)
+    pad_width, pad_height = utils.calculate_padding(image.shape[1], image.shape[0], args.rotation_factor)
+    padded_image = utils.pad_image(image, pad_width, pad_height)
+    transformedImg = rotation.rotate_image(args.rotation_factor, padded_image, interpolation)
     # cv2.imwrite(outputName, transformedImg)
 
 output_image = np.zeros((args.height, args.width), dtype=np.uint8)
