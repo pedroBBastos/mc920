@@ -4,6 +4,7 @@ import argparse
 import interpolation_by_point
 import scaling
 import rotation
+import resize
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-r', action='store', type=float, dest='rotation_factor', help='Rotation angle')
@@ -42,24 +43,11 @@ transformedImg = None
 
 if args.scale_factor:
     transformedImg = scaling.scale_image(args.scale_factor, image, interpolation)
-    cv2.imwrite(outputName, transformedImg)
+    # cv2.imwrite(outputName, transformedImg)
 elif args.rotation_factor:
     transformedImg = rotation.rotate_image(args.rotation_factor, image, interpolation)
-    cv2.imwrite(outputName, transformedImg)
+    # cv2.imwrite(outputName, transformedImg)
 
-
-# output_image = np.zeros((args.height, args.width), dtype=np.uint8)
-# if args.interpolation == 'NEAREST':
-#     interpolations.nearest_neighbor_interpolation(transformedImg, output_image)
-#     cv2.imwrite('resized_image-nearest.png', output_image)
-# elif args.interpolation == 'BILINEAR':
-#     interpolations.bilinear_interpolation(transformedImg, output_image)
-#     cv2.imwrite('resized_image-bilinear.png', output_image)
-# elif args.interpolation == 'BICUBIC':
-#     interpolations.bicubic_interpolation(transformedImg, output_image)
-#     cv2.imwrite('resized_image-bicubic.png', output_image)
-# elif args.interpolation == 'LAGRANGE':
-#     interpolations.lagrange_interpolation(transformedImg, output_image)
-#     cv2.imwrite('resized_image-lagrange.png', output_image)
-# else:
-#     print("No interpolation method provided... Aborting..")
+output_image = np.zeros((args.height, args.width), dtype=np.uint8)
+resize.resize(transformedImg, output_image, interpolation)
+cv2.imwrite(outputName, output_image)
