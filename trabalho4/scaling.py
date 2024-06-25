@@ -13,7 +13,6 @@ def scale_image(scaleFactor, inputImg, interpolation: interpolation.Interpolatio
                         [0, 0, 1]
                     ])
     inverseScaleMatrix = np.linalg.inv(scaleMatrix)
-    print("inverseScaleMatrix -> ", inverseScaleMatrix)
 
     outputRows, outptColumns = outputImage.shape[:2]
     for row in range(outputRows):

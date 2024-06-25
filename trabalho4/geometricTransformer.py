@@ -18,24 +18,28 @@ parser.add_argument('-o', action='store', type=str, dest='output_image', help='O
 
 args = parser.parse_args()
 
+if not args.input_image:
+    print("No input name provided... Aborting..")
+    exit()
+
 image = cv2.imread(args.input_image, cv2.IMREAD_GRAYSCALE)
-print(image.shape)
 
 interpolation = None
 outputName = None
+if args.output_image:
+    outputName = args.output_image
+else:
+    print("No output name provided... Aborting..")
+    exit()
 
 if args.interpolation == 'NEAREST':
     interpolation = interpolation_by_point.NearestNeighborInterpolation()
-    outputName = 'nearest.png'
 elif args.interpolation == 'BILINEAR':
     interpolation = interpolation_by_point.BilinearInterpolation()
-    outputName = 'bilinear.png'
 elif args.interpolation == 'BICUBIC':
     interpolation = interpolation_by_point.BicubicInterpolation()
-    outputName = 'bicubic.png'
 elif args.interpolation == 'LAGRANGE':
     interpolation = interpolation_by_point.LagrangeInterpolation()
-    outputName = 'lagrange.png'
 else:
     print("No interpolation method provided... Aborting..")
     exit()
@@ -43,14 +47,16 @@ else:
 transformedImg = None
 
 if args.scale_factor:
+    print("Realizando escala por fator ", args.scale_factor, ". Pode levar alguns segundos....")
     transformedImg = scaling.scale_image(args.scale_factor, image, interpolation)
-    # cv2.imwrite(outputName, transformedImg)
 elif args.rotation_factor:
+    print("Realizando rotação em ", args.rotation_factor, " graus em sentido anti-horário. Pode levar alguns segundos....")
     pad_width, pad_height = utils.calculate_padding(image.shape[1], image.shape[0], args.rotation_factor)
     padded_image = utils.pad_image(image, pad_width, pad_height)
     transformedImg = rotation.rotate_image(args.rotation_factor, padded_image, interpolation)
-    # cv2.imwrite(outputName, transformedImg)
 
 output_image = np.zeros((args.height, args.width), dtype=np.uint8)
 resize.resize(transformedImg, output_image, interpolation)
 cv2.imwrite(outputName, output_image)
+
+print("Transformações realizadas!")

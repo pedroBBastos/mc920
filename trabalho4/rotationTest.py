@@ -35,7 +35,6 @@ rotationFactor = -80
 rotationFactorRadians = np.radians(rotationFactor)
 
 output_image = np.zeros(image.shape, dtype=np.uint8)
-print("output_image.shape -> ", output_image.shape)
 
 rotationMatrix = np.array([
                         [math.cos(rotationFactorRadians), -math.sin(rotationFactorRadians), 0],

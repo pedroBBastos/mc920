@@ -7,7 +7,6 @@ def rotate_image(rotationFactor, inputImg, interpolation: interpolation.Interpol
     image_height, image_width = inputImg.shape[:2]
 
     output_image = np.zeros(inputImg.shape, dtype=np.uint8)
-    print("output_image.shape -> ", output_image.shape)
 
     rotationMatrix = np.array([
                             [math.cos(rotationFactorRadians), -math.sin(rotationFactorRadians), 0],

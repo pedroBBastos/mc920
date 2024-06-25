@@ -2,13 +2,12 @@ comentar dos ruídos sal e pimenta por não obter os valores em absoluto da fór
 
 ------------------------
 
-python3 geometricTransformer.py -i ./images/baboon.png -he 512 -w 512 -m LAGRANGE -e 2.5
-python3 geometricTransformer.py -i ./images/baboon.png -he 250 -w 300 -m BILINEAR -r 66
+python3 geometricTransformer.py -i ./images/baboon.png -he 512 -w 512 -m NEAREST -e 2.5 -o output.jpg
+python3 geometricTransformer.py -i ./images/baboon.png -he 512 -w 512 -m BILINEAR -e 2.5 -o output.jpg
+python3 geometricTransformer.py -i ./images/baboon.png -he 250 -w 300 -m BICUBIC -e 2.5 -o output.jpg
+python3 geometricTransformer.py -i ./images/baboon.png -he 300 -w 250 -m LAGRANGE -e 2.5 -o output.jpg
 
-python3 geometricTransformer.py -i ./images/baboon.png -he 512 -w 512 -m NEAREST -e 2.5
-
-
-python3 geometricTransformer.py -i ./images/baboon.png -he 250 -w 300 -m NEAREST -r 66
-python3 geometricTransformer.py -i ./images/baboon.png -he 250 -w 300 -m BILINEAR -r 66
-python3 geometricTransformer.py -i ./images/baboon.png -he 250 -w 300 -m BICUBIC -r 66
-python3 geometricTransformer.py -i ./images/baboon.png -he 250 -w 300 -m LAGRANGE -r 66
+python3 geometricTransformer.py -i ./images/baboon.png -he 512 -w 512 -m NEAREST -r 66 -o output.jpg
+python3 geometricTransformer.py -i ./images/baboon.png -he 512 -w 512 -m BILINEAR -r 66 -o output.jpg
+python3 geometricTransformer.py -i ./images/baboon.png -he 250 -w 300 -m BICUBIC -r 66 -o output.jpg
+python3 geometricTransformer.py -i ./images/baboon.png -he 300 -w 250 -m LAGRANGE -r 66 -o output.jpg
